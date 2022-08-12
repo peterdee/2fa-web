@@ -1,0 +1,30 @@
+@import "./base.css";
+
+a {
+  text-decoration: none;
+  color: var(--accent);
+  transition: 0.4s;
+}
+
+button {
+  background-color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: calc(var(--spacer-half) / 2);
+  color: var(--text-inverted);
+  outline: none;
+  padding: var(--spacer);
+}
+
+.mt-1 {
+  margin-top: var(--spacer);
+}
+
+.error-block, .error-contet {
+  height: calc(var(--spacer) * 2);
+  width: 100%;
+}
+.error-content {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
