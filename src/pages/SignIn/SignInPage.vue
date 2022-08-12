@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 
+import { COLORS, SPACER } from '@/constants';
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
-import { SPACER } from '@/constants';
+import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
+import router from '@/router';
+import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
 
 interface ComponentState {
   formError: string;
@@ -22,6 +25,15 @@ const state: ComponentState = reactive({
   password: '',
 });
 
+const disableSubmit = computed((): boolean => {
+  if (state.loading) {
+    return true;
+  }
+  const trimmedLogin = state.login.trim();
+  const trimmedPassword = state.password.trim();
+  return !(trimmedLogin && trimmedPassword);
+});
+
 const handleInput = (event: Event): void => {
   const { name = '', value = '' } = event.target as HTMLInputElement;
   const typedName = name as InputNames;
@@ -31,21 +43,23 @@ const handleInput = (event: Event): void => {
 
 const handleSubmit = async (): Promise<void> => {
   state.formError = 'error';
+  state.loading = true;
   return;
 };
 </script>
 
 <template>
   <div class="wrap">
-    <h1>
-      Sign in page
-    </h1>
+    <div class="auth-title">
+      SIGN IN
+    </div>
     <form
-      class="form"
       @submit.prevent="handleSubmit"
+      class="form mt-1"
     >
       <InputComponent
         :custom-styles="{ marginTop: `${SPACER}px` }"
+        :disabled="state.loading"
         :handleInput="handleInput"
         :name="'login'"
         :placeholder="'Login'"
@@ -54,13 +68,14 @@ const handleSubmit = async (): Promise<void> => {
       />
       <InputComponent
         :custom-styles="{ marginTop: `${SPACER}px` }"
+        :disabled="state.loading"
         :handleInput="handleInput"
         :name="'password'"
         :placeholder="'Password'"
         :type="'password'"
         :value="state.password"
       />
-      <div class="error-block">
+      <div class="error-block mt-1">
         <div
           v-if="! state.formError"
           class="error-content"
@@ -68,13 +83,46 @@ const handleSubmit = async (): Promise<void> => {
           {{ state.formError }}
         </div>
       </div>
-      <button
-        class="mt-1"
-        type="submit"
+      <WideButton
+        :custom-button-styles="{
+          backgroundColor: disableSubmit
+            ? COLORS.muted
+            : COLORS.accent,
+          marginTop: `${SPACER}px`,
+        }"
+        :disabled="disableSubmit"
+        :is-submit="true"
       >
-        Sign In
-      </button>
+        SIGN IN
+      </WideButton>
     </form>
+    <LinkButton
+      :custom-button-styles="{
+        marginTop: `${SPACER}px`,
+      }"
+      :disabled="state.loading"
+      :on-click="() => router.push('/recovery')"
+    >
+      Forgot password
+    </LinkButton>
+    <LinkButton
+      :custom-button-styles="{
+        marginTop: `${SPACER}px`,
+      }"
+      :disabled="state.loading"
+      :on-click="() => router.push('/sign-up')"
+    >
+      Create account
+    </LinkButton>
+    <LinkButton
+      :custom-button-styles="{
+        marginTop: `${SPACER}px`,
+      }"
+      :disabled="state.loading"
+      :on-click="() => router.push('/')"
+    >
+      Back
+    </LinkButton>
   </div>
 </template>
 
@@ -83,7 +131,7 @@ const handleSubmit = async (): Promise<void> => {
   display: flex;
   flex-direction: column;
 }
-.form {
+.wrap {
   max-width: calc(var(--spacer) * 20);
 }
 </style>

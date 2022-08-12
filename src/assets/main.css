@@ -1,22 +1,36 @@
 @import "./base.css";
 
 a {
-  text-decoration: none;
   color: var(--accent);
-  transition: 0.4s;
+  text-decoration: none;
 }
 
 button {
-  background-color: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: calc(var(--spacer-half) / 2);
-  color: var(--text-inverted);
+  background-color: transparent;
+  border: none;
+  margin: 0;
   outline: none;
-  padding: var(--spacer);
+  padding: 0;
 }
 
+.align-items-center {
+  align-items: center;
+}
+.flex {
+  display: flex;
+}
+.justify-center {
+  justify-content: center;
+}
 .mt-1 {
   margin-top: var(--spacer);
+}
+
+.auth-title {
+  font-size: calc(var(--spacer) * 2);
+  font-weight: 200;
+  letter-spacing: calc(var(--spacer-half) / 2);
+  text-align: center;
 }
 
 .error-block, .error-contet {
@@ -25,6 +39,9 @@ button {
 }
 .error-content {
   align-items: center;
+  color: var(--negative);
+  font-size: var(--spacer);
   display: flex;
   justify-content: center;
+  text-align: center;
 }

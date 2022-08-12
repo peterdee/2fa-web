@@ -14,15 +14,6 @@
   --warning: #DD8834;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --accent: var(--accent-light);
-    --background: #000000;
-    --text: #FFFFFF;
-    --textInverted: #080808;
-  }
-}
-
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

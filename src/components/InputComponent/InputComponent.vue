@@ -3,6 +3,7 @@ import type { StyleValue } from 'vue';
 
 interface InputComponentProps {
   customStyles?: StyleValue;
+  disabled?: boolean;
   handleInput: (event: Event) => void;
   name: string;
   placeholder?: string;
@@ -16,6 +17,7 @@ defineProps<InputComponentProps>();
 <template>
   <input
     @input="handleInput"
+    :disabled="disabled"
     :name="name"
     :placeholder="placeholder ?? ''"
     :style="{
@@ -34,5 +36,14 @@ input {
   font-size: var(--spacer);
   outline: none;
   padding: var(--spacer);
+  transition: border 200ms ease-out;
+}
+input:hover {
+  border: 1px solid var(--accent-light);
+  transition: border 200ms ease-in;
+}
+input:disabled {
+  border: 1px solid var(--muted);
+  transition: border 200ms ease-in;
 }
 </style>
