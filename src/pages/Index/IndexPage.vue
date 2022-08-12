@@ -1,7 +1,18 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
+
+import { getValue } from '@/utilities/storage';
 import router from '@/router';
 
-const navigate = (destination: string) => router.push(destination);
+onMounted(() => {
+  const login = getValue<string>('login');
+  const token = getValue<string>('token');
+  const userId = getValue<string>('userId');
+
+  if (!!login && !!token && !!userId) {
+    return router.replace('/home');
+  }
+});
 </script>
 
 <template>
@@ -10,15 +21,17 @@ const navigate = (destination: string) => router.push(destination);
       Index page
     </h1>
     <button
-      @click="navigate('sign-in')"
+      @click="router.push('sign-in')"
       type="button"
     >
       Sign in
     </button>
-
-    <a href="/sign-up">
+    <button
+      @click="router.push('sign-up')"
+      type="button"
+    >
       Sign up
-    </a>
+    </button>
   </div>
 </template>
 

@@ -12,4 +12,8 @@ export const COLORS = {
   warning: '#DD8834',
 };
 
+export const ERROR_MESSAGES = {
+  pleaseProvideRequiredData: 'Please provide required data!',
+};
+
 export const SPACER = 16;

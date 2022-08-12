@@ -1,11 +1,21 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import {
+  computed,
+  onMounted,
+  reactive,
+} from 'vue';
 
-import { COLORS, SPACER } from '@/constants';
+import {
+  COLORS,
+  ERROR_MESSAGES,
+  SPACER,
+} from '@/constants';
+import { getValue } from '@/utilities/storage';
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
 import router from '@/router';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
+import type { NavigationFailure } from 'vue-router';
 
 interface ComponentState {
   formError: string;
@@ -18,11 +28,21 @@ enum InputNames {
   passowrd = 'password',
 }
 
-const state: ComponentState = reactive({
+const state = reactive<ComponentState>({
   formError: '',
   loading: false,
   login: '',
   password: '',
+});
+
+onMounted((): void | Promise<void | NavigationFailure | undefined> => {
+  const login = getValue<string>('login');
+  const token = getValue<string>('token');
+  const userId = getValue<string>('userId');
+
+  if (!!login && !!token && !!userId) {
+    return router.replace('/home');
+  }
 });
 
 const disableSubmit = computed((): boolean => {
@@ -41,10 +61,25 @@ const handleInput = (event: Event): void => {
   state.formError = '';
 };
 
-const handleSubmit = async (): Promise<void> => {
-  state.formError = 'error';
+const handleSubmit = async (): Promise<null | void> => {
+  const { login, password } = state;
+  const trimmedLogin = login.trim();
+  const trimmedPassword = password.trim();
+  if (!(trimmedLogin && trimmedPassword)) {
+    state.formError = ERROR_MESSAGES.pleaseProvideRequiredData;
+    return null;
+  }
+
   state.loading = true;
-  return;
+
+  try {
+    // TODO: send request via Axios
+    state.loading = false;
+  } catch (error) {
+    state.loading = false;
+    state.formError = 'error';
+    // TODO: handle errors
+  }
 };
 </script>
 

@@ -2,21 +2,21 @@ interface StoreItem<T> {
   value: T;
 }
 
-export enum StoreKeys {
-  login = 'login',
-  token = 'token',
-  userId = 'userId',
+export interface StoreKeys {
+  login: string;
+  token: string;
+  userId: string;
 }
 
 export function deleteAllValues(): void {
   return localStorage.clear();
 }
 
-export function deleteValue(key: StoreKeys): void {
+export function deleteValue(key: keyof StoreKeys): void {
   return localStorage.removeItem(key);
 }
 
-export function getValue<T>(key: StoreKeys): null | T {
+export function getValue<T>(key: keyof StoreKeys): null | T {
   const storeItem: null | string = localStorage.getItem(key);
   if (!storeItem) {
     return null;
@@ -25,6 +25,6 @@ export function getValue<T>(key: StoreKeys): null | T {
   return value.value;
 }
 
-export function storeValue<T>(key: StoreKeys, value: T): void {
+export function storeValue<T>(key: keyof StoreKeys, value: T): void {
   return localStorage.setItem(key, JSON.stringify({ value }));
 }
