@@ -4,8 +4,10 @@ import {
   onMounted,
   reactive,
 } from 'vue';
+import type { NavigationFailure } from 'vue-router';
 
 import {
+  CLIENT_TYPE,
   COLORS,
   ERROR_MESSAGES,
   SPACER,
@@ -13,9 +15,10 @@ import {
 import { getValue } from '@/utilities/storage';
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
+import request, { ENDPOINTS } from '@/utilities/api';
+import type { ResponseError } from '@/utilities/api';
 import router from '@/router';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
-import type { NavigationFailure } from 'vue-router';
 
 interface ComponentState {
   formError: string;
@@ -23,9 +26,18 @@ interface ComponentState {
   login: string;
   password: string;
 }
+
 enum InputNames {
   login = 'login',
   passowrd = 'password',
+}
+
+interface SignInPayload {
+  token: string;
+  user: {
+    id: number;
+    login: string;
+  };
 }
 
 const state = reactive<ComponentState>({
@@ -73,10 +85,22 @@ const handleSubmit = async (): Promise<null | void> => {
   state.loading = true;
 
   try {
-    // TODO: send request via Axios
+    const { data: { data } = {} } = await request<SignInPayload>({
+      ...ENDPOINTS.signIn,
+      data: {
+        clientType: CLIENT_TYPE,
+        login: trimmedLogin,
+        password: trimmedPassword,
+      },
+    });
+    console.log(data);
+
     state.loading = false;
   } catch (error) {
     state.loading = false;
+    const typedError = error as ResponseError;
+    const response = typedError.response?.data;
+    console.log(response);
     state.formError = 'error';
     // TODO: handle errors
   }

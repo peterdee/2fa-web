@@ -1,3 +1,7 @@
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:2244';
+
+export const CLIENT_TYPE = 'web';
+
 export const COLORS = {
   accent: '#2244FF',
   accentLight: '#4488FF',
