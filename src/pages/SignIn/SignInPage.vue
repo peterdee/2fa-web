@@ -12,12 +12,12 @@ import {
   ERROR_MESSAGES,
   SPACER,
 } from '@/constants';
-import { getValue } from '@/utilities/storage';
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
 import request, { ENDPOINTS } from '@/utilities/api';
 import type { ResponseError } from '@/utilities/api';
 import router from '@/router';
+import { useStore } from '@/stores/auth.store';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
 
 interface ComponentState {
@@ -46,12 +46,10 @@ const state = reactive<ComponentState>({
   login: '',
   password: '',
 });
+const store = useStore();
 
 onMounted((): void | Promise<void | NavigationFailure | undefined> => {
-  const login = getValue<string>('login');
-  const token = getValue<string>('token');
-  const userId = getValue<string>('userId');
-
+  const { login, token, userId } = store;
   if (!!login && !!token && !!userId) {
     return router.replace('/home');
   }
@@ -73,7 +71,7 @@ const handleInput = (event: Event): void => {
   state.formError = '';
 };
 
-const handleSubmit = async (): Promise<null | void> => {
+const handleSubmit = async (): Promise<null | void | NavigationFailure | undefined> => {
   const { login, password } = state;
   const trimmedLogin = login.trim();
   const trimmedPassword = password.trim();
@@ -85,7 +83,14 @@ const handleSubmit = async (): Promise<null | void> => {
   state.loading = true;
 
   try {
-    const { data: { data } = {} } = await request<SignInPayload>({
+    const {
+      data: {
+        data: {
+          token = '',
+          user = null,
+        } = {},
+      } = {},
+    } = await request<SignInPayload>({
       ...ENDPOINTS.signIn,
       data: {
         clientType: CLIENT_TYPE,
@@ -93,9 +98,18 @@ const handleSubmit = async (): Promise<null | void> => {
         password: trimmedPassword,
       },
     });
-    console.log(data);
 
     state.loading = false;
+
+    if (!(token && user)) {
+      state.formError = ERROR_MESSAGES.generic;
+    }
+    store.setAuth({
+      login: user?.login as string,
+      token,
+      userId: user?.id as number,
+    });
+    return router.replace('/home');
   } catch (error) {
     state.loading = false;
     const typedError = error as ResponseError;
@@ -108,7 +122,7 @@ const handleSubmit = async (): Promise<null | void> => {
 </script>
 
 <template>
-  <div class="wrap">
+  <div class="wrap width">
     <div class="auth-title">
       SIGN IN
     </div>
@@ -136,7 +150,7 @@ const handleSubmit = async (): Promise<null | void> => {
       />
       <div class="error-block mt-1">
         <div
-          v-if="! state.formError"
+          v-if="state.formError"
           class="error-content"
         >
           {{ state.formError }}
@@ -189,8 +203,5 @@ const handleSubmit = async (): Promise<null | void> => {
 .form, .wrap {
   display: flex;
   flex-direction: column;
-}
-.wrap {
-  max-width: calc(var(--spacer) * 20);
 }
 </style>

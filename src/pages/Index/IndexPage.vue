@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
-import { getValue } from '@/utilities/storage';
 import router from '@/router';
+import { useStore } from '@/stores/auth.store';
+
+const store = useStore();
 
 onMounted(() => {
-  const login = getValue<string>('login');
-  const token = getValue<string>('token');
-  const userId = getValue<string>('userId');
-
+  const { login, token, userId } = store;
   if (!!login && !!token && !!userId) {
     return router.replace('/home');
   }

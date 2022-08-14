@@ -45,3 +45,9 @@ button {
   justify-content: center;
   text-align: center;
 }
+
+.width {
+  max-width: calc(var(--spacer) * 25);
+  min-width: calc(var(--spacer) * 20);
+  width: 100%;
+}

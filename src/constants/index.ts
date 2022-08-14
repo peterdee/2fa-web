@@ -17,6 +17,7 @@ export const COLORS = {
 };
 
 export const ERROR_MESSAGES = {
+  generic: 'Something went wrong...',
   pleaseProvideRequiredData: 'Please provide required data!',
 };
 
