@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const HEADER_HIDDEN = [
+  'recovery',
   'signIn',
   'signUp',
 ];

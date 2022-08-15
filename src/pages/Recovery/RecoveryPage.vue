@@ -25,15 +25,24 @@ interface ComponentState {
   formError: string;
   loading: boolean;
   login: string;
-  password: string;
+  newPassword: string;
+  recoveryAnswer: string;
+  recoveryQuestion: string;
+  stage: number;
+  userId: number | null;
 }
 
 enum InputNames {
   login = 'login',
-  passowrd = 'password',
+  recoveryAnswer = 'recoveryAnswer',
 }
 
-interface SignInPayload {
+interface RecoveryCheckPayload {
+  recoveryQuestion: string;
+  userId: number;
+}
+
+interface RecoveryUpdatePayload {
   token: string;
   user: {
     id: number;
@@ -46,7 +55,11 @@ const state = reactive<ComponentState>({
   formError: '',
   loading: false,
   login: '',
-  password: '',
+  newPassword: '',
+  recoveryAnswer: '',
+  recoveryQuestion: '',
+  stage: 1,
+  userId: null,
 });
 const store = useStore();
 
@@ -57,15 +70,6 @@ onMounted((): void | Promise<Navigation> => {
   }
 });
 
-const disableSubmit = computed((): boolean => {
-  if (state.loading) {
-    return true;
-  }
-  const trimmedLogin = state.login.trim();
-  const trimmedPassword = state.password.trim();
-  return !(trimmedLogin && trimmedPassword);
-});
-
 const handleInput = (event: Event): void => {
   const { name = '', value = '' } = event.target as HTMLInputElement;
   const typedName = name as InputNames;
@@ -73,54 +77,40 @@ const handleInput = (event: Event): void => {
   state.formError = '';
 };
 
-const handleSubmit = async (): Promise<Navigation | null | string> => {
-  const { login, password } = state;
+const handleStageOne = async (): Promise<Navigation | number | string> => {
+  const { login } = state;
   const trimmedLogin = login.trim();
-  const trimmedPassword = password.trim();
-  if (!(trimmedLogin && trimmedPassword)) {
-    state.formError = ERROR_MESSAGES.pleaseProvideRequiredData;
-    return null;
+  if (!trimmedLogin) {
+    return state.formError = ERROR_MESSAGES.pleaseProvideRequiredData;
   }
 
   state.loading = true;
 
   try {
+    const { data } = await request<RecoveryCheckPayload>({
+      ...ENDPOINTS.recoveryCheck,
+      data: { login: trimmedLogin },
+    });
     const {
       data: {
-        data: {
-          token = '',
-          user = null,
-        } = {},
+        recoveryQuestion: receivedRecoveryQuestion,
+        userId: receivedUserId,
       } = {},
-    } = await request<SignInPayload>({
-      ...ENDPOINTS.signIn,
-      data: {
-        clientType: CLIENT_TYPE,
-        login: trimmedLogin,
-        password: trimmedPassword,
-      },
-    });
+    } = data;
+    if (!(receivedRecoveryQuestion && receivedUserId)) {
+      return state.formError = ERROR_MESSAGES.generic;
+    }
 
     state.loading = false;
-
-    if (!(token && user)) {
-      state.formError = ERROR_MESSAGES.generic;
-    }
-    store.setAuth({
-      login: user?.login as string,
-      token,
-      userId: user?.id as number,
-    });
-    return router.replace('/home');
+    state.recoveryQuestion = receivedRecoveryQuestion;
+    state.userId = receivedUserId;
+    return state.stage = 2;
   } catch (error) {
     state.loading = false;
     const typedError = error as ResponseError;
     if (typedError.response && typedError.response.data) {
       const response = typedError.response.data;
       if (response.status === 400) {
-        if (response.info === RESPONSE_MESSAGES.invalidData) {
-          return state.formError = ERROR_MESSAGES.invalidData;
-        }
         if (response.info === RESPONSE_MESSAGES.missingData) {
           return state.formError = ERROR_MESSAGES.missingData;
         }
@@ -132,66 +122,93 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
     return state.formError = ERROR_MESSAGES.generic;
   }
 };
+
+const handleStageTwo = async (): Promise<Navigation | number | string> => {
+  console.log('stage', state.stage);
+};
+
+const disableStageTwoSubmit = computed((): boolean => {
+  if (state.loading) {
+    return true;
+  }
+  return !(state.newPassword && state.recoveryAnswer);
+});
 </script>
 
 <template>
   <div class="wrap width">
     <div class="auth-title noselect">
-      SIGN IN
+      ACCOUNT RECOVERY
     </div>
     <form
-      @submit.prevent="handleSubmit"
+      v-if="state.stage === 1"
+      @submit.prevent="handleStageOne"
       class="form mt-3"
     >
       <InputComponent
         @input="handleInput"
         :disabled="state.loading"
         :name="'login'"
-        :placeholder="'Login'"
+        :placeholder="'Please enter your login'"
         :type="'text'"
         :value="state.login"
-      />
-      <InputComponent
-        @input="handleInput"
-        :custom-styles="{ marginTop: `${SPACER}px` }"
-        :disabled="state.loading"
-        :name="'password'"
-        :placeholder="'Password'"
-        :type="'password'"
-        :value="state.password"
       />
       <AuthErrorComponent :message="state.formError" />
       <WideButton
         :custom-button-styles="{
-          backgroundColor: disableSubmit
+          backgroundColor: state.loading || state.login.length === 0
             ? COLORS.muted
             : COLORS.accent,
         }"
-        :disabled="disableSubmit"
+        :disabled="state.loading || state.login.length === 0"
         :is-submit="true"
         :loading="state.loading"
       >
-        SIGN IN
+        PROCEED
       </WideButton>
     </form>
-    <LinkButton
-      @click="() => router.push('/recovery')"
-      :custom-button-styles="{
-        marginTop: `${SPACER}px`,
-      }"
-      :disabled="state.loading"
+    <form
+      v-if="state.stage === 2"
+      @submit.prevent="handleStageTwo"
+      class="form mt-3"
     >
-      Forgot password
-    </LinkButton>
-    <LinkButton
-      @click="() => router.push('/sign-up')"
-      :custom-button-styles="{
-        marginTop: `${SPACER}px`,
-      }"
-      :disabled="state.loading"
-    >
-      Create account
-    </LinkButton>
+      <div>
+        Please answer the following question:
+      </div>
+      <div>
+        {{ state.recoveryQuestion }}
+      </div>
+      <InputComponent
+        @input="handleInput"
+        :disabled="state.loading"
+        :name="'recoveryAnswer'"
+        :placeholder="'Answer'"
+        :type="'text'"
+        :value="state.recoveryAnswer"
+      />
+      <InputComponent
+        @input="handleInput"
+        :disabled="state.loading"
+        :name="'newPassword'"
+        :placeholder="'New password'"
+        :type="'password'"
+        :value="state.newPassword"
+        class="mt-1"
+      />
+      <AuthErrorComponent :message="state.formError" />
+      <WideButton
+        :custom-button-styles="{
+          backgroundColor: disableStageTwoSubmit
+            ? COLORS.muted
+            : COLORS.accent,
+        }"
+        :disabled="disableStageTwoSubmit"
+        :is-submit="true"
+        :loading="state.loading"
+      >
+        SUBMIT
+      </WideButton>
+    </form>
     <LinkButton
       @click="() => router.back()"
       :custom-button-styles="{

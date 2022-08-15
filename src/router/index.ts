@@ -16,6 +16,11 @@ const router = createRouter({
       path: '/home',
     },
     {
+      component: () => import('../pages/Recovery/RecoveryPage.vue'),
+      name: 'recovery',
+      path: '/recovery',
+    },
+    {
       component: () => import('../pages/SignIn/SignInPage.vue'),
       name: 'signIn',
       path: '/sign-in',
@@ -24,6 +29,11 @@ const router = createRouter({
       component: () => import('../pages/SignUp/SignUpPage.vue'),
       name: 'signUp',
       path: '/sign-up',
+    },
+    {
+      component: () => import('../pages/NotFound/NotFoundPage.vue'),
+      name: 'notFound',
+      path: '/:pathMatch(.*)*',
     },
   ],
 });

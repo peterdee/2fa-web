@@ -44,19 +44,6 @@ button {
   text-align: center;
 }
 
-.error-block {
-  align-items: center;
-  display: flex;
-  height: calc(var(--spacer) * 3);
-  justify-content: center;
-  width: 100%;
-}
-.error-content {
-  color: var(--negative);
-  font-size: var(--spacer);
-  text-align: center;
-}
-
 .width {
   max-width: calc(var(--spacer) * 25);
   min-width: calc(var(--spacer) * 20);

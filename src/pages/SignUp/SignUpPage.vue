@@ -6,7 +6,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 
-import isAlphanumeric from '@/utilities/alphanumeric';
+import AuthErrorComponent from '@/components/AuthErrorComponent/AuthErrorComponent.vue';
 import {
   CLIENT_TYPE,
   COLORS,
@@ -17,6 +17,7 @@ import {
   SPACER,
 } from '@/constants';
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
+import isAlphanumeric from '@/utilities/alphanumeric';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
 import type { Navigation } from '@/types/navigation';
 import request, { ENDPOINTS, type ResponseError } from '@/utilities/api';
@@ -229,14 +230,7 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
         :type="'text'"
         :value="state.recoveryAnswer"
       />
-      <div class="error-block">
-        <div
-          v-if="state.formError"
-          class="error-content"
-        >
-          {{ state.formError }}
-        </div>
-      </div>
+      <AuthErrorComponent :message="state.formError" />
       <WideButton
         :custom-button-styles="{
           backgroundColor: disableSubmit
@@ -260,7 +254,7 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
       I alreay have an account
     </LinkButton>
     <LinkButton
-      @click="() => router.push('/')"
+      @click="() => router.back()"
       :custom-button-styles="{
         marginTop: `${SPACER}px`,
       }"
@@ -278,6 +272,7 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
 }
 .wrap {
   display: flex;
+  flex-direction: column;
   height: calc(100vh - (var(--footer-height) + var(--header-height)));
   justify-content: center;
   margin: 0 auto;
