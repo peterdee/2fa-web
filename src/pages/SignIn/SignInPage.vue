@@ -16,8 +16,7 @@ import {
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
 import type { Navigation } from '@/types/navigation';
-import request, { ENDPOINTS } from '@/utilities/api';
-import type { ResponseError } from '@/utilities/api';
+import request, { ENDPOINTS, type ResponseError } from '@/utilities/api';
 import { useStore } from '@/stores/auth.store';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
 
@@ -176,6 +175,7 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
         }"
         :disabled="disableSubmit"
         :is-submit="true"
+        :loading="state.loading"
       >
         SIGN IN
       </WideButton>
@@ -216,7 +216,10 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
   flex-direction: column;
 }
 .wrap {
-  margin: 0 auto var(--header-height) auto;
+  display: flex;
+  height: calc(100vh - (var(--footer-height) + var(--header-height)));
+  justify-content: center;
+  margin: 0 auto;
   padding: 0 var(--spacer);
 }
 </style>

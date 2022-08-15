@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import type { StyleValue } from 'vue';
 
-interface InputComponentProps {
+interface TextAreaComponentProps {
   customStyles?: StyleValue;
   disabled?: boolean;
   name: string;
   placeholder?: string;
-  type: string;
   value: string;
 }
 
-defineProps<InputComponentProps>();
+defineProps<TextAreaComponentProps>();
 const emit = defineEmits(['input']);
 </script>
 
 <template>
-  <input
+  <textarea
     @input="emit('input', $event)"
     :disabled="disabled"
     :name="name"
@@ -23,31 +22,38 @@ const emit = defineEmits(['input']);
     :style="{
       ...((typeof customStyles === 'object' && customStyles) || {}),
     }"
-    :type="type"
     :value="value"
-  />
+  ></textarea>
 </template>
 
 <style scoped>
-input {
+textarea {
   background-color: var(--background);
   border: 1px solid var(--accent);
   color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: var(--spacer);
+  height: calc(var(--spacer) * 5);
   outline: none;
   padding: var(--spacer);
+  resize: none;
   transition: border 200ms ease-out;
 }
-input:hover {
+textarea:hover {
   border: 1px solid var(--accent-light);
   transition: border 200ms ease-in;
 }
-input:disabled {
+textarea:disabled {
   border: 1px solid var(--muted);
   transition: border 200ms ease-in;
 }
-input:focus {
+textarea:focus {
   border: 1px solid var(--accent-light);
   transition: border 200ms ease-in;
+}
+textarea::placeholder {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 </style>

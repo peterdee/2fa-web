@@ -20,13 +20,27 @@ export const ERROR_MESSAGES = {
   accessDenied: 'Access denied!',
   generic: 'Something went wrong...',
   invalidData: 'Provided data is invalid!',
+  loginIsAlreadyInUse: 'Login is already in use!',
+  loginIsTooLong: 'Login is too long!',
+  loginShouldBeAlphanumeric: 'Login should be alphanumeric!',
   missingData: 'Required data is missing!',
+  passwordContainsSpaces: 'Password contains spaces!',
+  passwordIsTooShort: 'Password is too short!',
   pleaseProvideRequiredData: 'Please provide required data!',
 };
 
+export const LOGIN_MAX_LENGTH = 16;
+
+export const PASSWORD_MIN_LENGTH = 8;
+
 export const RESPONSE_MESSAGES = {
   invalidData: 'INVALID_DATA',
+  invalidLogin: 'INVALID_LOGIN',
+  loginAlreadyInUse: 'LOGIN_ALREADY_IN_USE',
+  loginIsTooLong: 'LOGIN_IS_TOO_LONG',
   missingData: 'MISSING_DATA',
+  passwordContainsSpaces: 'PASSWORD_CONTAINS_SPACES',
+  passwordIsTooShort: 'PASSWORD_IS_TOO_SHORT',
 };
 
 export const SPACER = 16;

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { StyleValue } from 'vue';
 
+import loader from '@/assets/loader.svg';
+
 interface WideButtonComponentProps {
   customButtonStyles?: StyleValue;
   disabled?: boolean;
   isSubmit?: boolean;
+  loading?: boolean;
 }
 
 const props = defineProps<WideButtonComponentProps>();
@@ -26,9 +29,21 @@ const handleClick = (): null | void => {
       ...((typeof customButtonStyles === 'object' && customButtonStyles) || {}),
     }"
     :type="isSubmit ? 'submit' : 'button'"
-    class="noselect"
+    class="flex align-items-center justify-center noselect"
   >
-    <slot></slot>
+    <div
+      v-if="loading"
+      class="spinner"
+    >
+      <img
+        :src="loader"
+        alt="Loading..."
+        class="spinner-image"
+      />
+    </div>
+    <div v-if="!loading">
+      <slot></slot>
+    </div>
   </button>
 </template>
 
@@ -38,7 +53,7 @@ button {
   border-radius: calc(var(--spacer-half) / 2);
   color: var(--text-inverted);
   font-size: calc(var(--spacer) - var(--spacer) / 4);
-  padding: var(--spacer);
+  height: calc((var(--spacer) * 3) + var(--spacer-half));
   transition: background-color 200ms ease-out;
   width: 100%;
 }
@@ -51,5 +66,22 @@ button:disabled {
   background-color: var(--muted);
   cursor: not-allowed;
   transition: background-color 200ms ease-in;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }           
+}
+.spinner {
+  animation: rotate 1.5s linear infinite;
+  height: calc(var(--spacer) * 2);
+  user-select: none;
+  width: calc(var(--spacer) * 2);
+}
+.spinner-image {
+  height: calc(var(--spacer) * 2);
+  user-select: none;
+  width: calc(var(--spacer) * 2);
 }
 </style>

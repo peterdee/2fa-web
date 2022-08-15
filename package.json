@@ -1,7 +1,12 @@
 {
   "name": "2fa-web",
   "version": "1.0.0",
+  "description": "WEB application for 2FA Mobile",
   "private": true,
+  "author": {
+    "name": "Peter Dyumin",
+    "url": "https://github.com/peterdee"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
@@ -9,6 +14,15 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterdee/2fa-web"
   },
   "dependencies": {
     "axios": "^0.27.2",
