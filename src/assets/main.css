@@ -25,6 +25,17 @@ button {
 .mt-1 {
   margin-top: var(--spacer);
 }
+.mt-3 {
+  margin-top: calc(var(--spacer) * 3);
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 .auth-title {
   font-size: calc(var(--spacer) * 2);
@@ -33,16 +44,16 @@ button {
   text-align: center;
 }
 
-.error-block, .error-contet {
-  height: calc(var(--spacer) * 2);
+.error-block {
+  align-items: center;
+  display: flex;
+  height: calc(var(--spacer) * 3);
+  justify-content: center;
   width: 100%;
 }
 .error-content {
-  align-items: center;
   color: var(--negative);
   font-size: var(--spacer);
-  display: flex;
-  justify-content: center;
   text-align: center;
 }
 

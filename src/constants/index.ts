@@ -17,8 +17,16 @@ export const COLORS = {
 };
 
 export const ERROR_MESSAGES = {
+  accessDenied: 'Access denied!',
   generic: 'Something went wrong...',
+  invalidData: 'Provided data is invalid!',
+  missingData: 'Required data is missing!',
   pleaseProvideRequiredData: 'Please provide required data!',
+};
+
+export const RESPONSE_MESSAGES = {
+  invalidData: 'INVALID_DATA',
+  missingData: 'MISSING_DATA',
 };
 
 export const SPACER = 16;

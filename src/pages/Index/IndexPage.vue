@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-import router from '@/router';
 import { useStore } from '@/stores/auth.store';
 
+const router = useRouter();
 const store = useStore();
 
 onMounted(() => {
@@ -20,13 +21,13 @@ onMounted(() => {
       Index page
     </h1>
     <button
-      @click="router.push('sign-in')"
+      @click="router.push('/sign-in')"
       type="button"
     >
       Sign in
     </button>
     <button
-      @click="router.push('sign-up')"
+      @click="router.push('/sign-up')"
       type="button"
     >
       Sign up
@@ -38,6 +39,6 @@ onMounted(() => {
 .centered {
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
+  margin-top: calc(var(--spacer) * 4);
 }
 </style>

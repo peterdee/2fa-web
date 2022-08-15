@@ -4,20 +4,21 @@ import type { StyleValue } from 'vue';
 interface LinkButtonComponentProps {
   customButtonStyles?: StyleValue;
   disabled?: boolean;
-  onClick: () => void;
 }
 
 defineProps<LinkButtonComponentProps>();
+const emit = defineEmits(['click']);
 </script>
 
 <template>
   <div class="flex justify-center">
     <button
-      @click="onClick"
+      @click="emit('click')"
       :disabled="disabled"
       :style="{
         ...((typeof customButtonStyles === 'object' && customButtonStyles) || {}),
       }"
+      class="noselect"
       type="button"
     >
       <slot></slot>

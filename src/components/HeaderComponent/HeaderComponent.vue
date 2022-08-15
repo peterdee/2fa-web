@@ -12,12 +12,12 @@ const currentRoute = computed(() => router.currentRoute.value.name);
 </script>
 
 <template>
-<div
-  v-if="!HEADER_HIDDEN.includes(String(currentRoute))"
-  class="flex align-items-center justify-space-between width header"
->
-  Header
-</div>
+  <header
+    v-if="!HEADER_HIDDEN.includes(String(currentRoute))"
+    class="flex align-items-center justify-space-between width header noselect"
+  >
+    Header
+  </header>
 </template>
 
 <style scoped>
@@ -25,5 +25,7 @@ const currentRoute = computed(() => router.currentRoute.value.name);
   background-color: var(--background);
   height: calc(var(--spacer) * 4);
   position: fixed;
+  top: 0;
+  z-index: 10;
 }
 </style>

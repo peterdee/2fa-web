@@ -4,7 +4,6 @@ import type { StyleValue } from 'vue';
 interface InputComponentProps {
   customStyles?: StyleValue;
   disabled?: boolean;
-  handleInput: (event: Event) => void;
   name: string;
   placeholder?: string;
   type: string;
@@ -12,11 +11,12 @@ interface InputComponentProps {
 }
 
 defineProps<InputComponentProps>();
+const emit = defineEmits(['input']);
 </script>
 
 <template>
   <input
-    @input="handleInput"
+    @input="emit('input', $event)"
     :disabled="disabled"
     :name="name"
     :placeholder="placeholder ?? ''"

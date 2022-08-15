@@ -4,19 +4,20 @@ import {
   onMounted,
   reactive,
 } from 'vue';
-import type { NavigationFailure } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import {
   CLIENT_TYPE,
   COLORS,
   ERROR_MESSAGES,
+  RESPONSE_MESSAGES,
   SPACER,
 } from '@/constants';
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
+import type { Navigation } from '@/types/navigation';
 import request, { ENDPOINTS } from '@/utilities/api';
 import type { ResponseError } from '@/utilities/api';
-import router from '@/router';
 import { useStore } from '@/stores/auth.store';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
 
@@ -40,6 +41,7 @@ interface SignInPayload {
   };
 }
 
+const router = useRouter();
 const state = reactive<ComponentState>({
   formError: '',
   loading: false,
@@ -48,7 +50,7 @@ const state = reactive<ComponentState>({
 });
 const store = useStore();
 
-onMounted((): void | Promise<void | NavigationFailure | undefined> => {
+onMounted((): void | Promise<Navigation> => {
   const { login, token, userId } = store;
   if (!!login && !!token && !!userId) {
     return router.replace('/home');
@@ -71,7 +73,7 @@ const handleInput = (event: Event): void => {
   state.formError = '';
 };
 
-const handleSubmit = async (): Promise<null | void | NavigationFailure | undefined> => {
+const handleSubmit = async (): Promise<Navigation | null | string> => {
   const { login, password } = state;
   const trimmedLogin = login.trim();
   const trimmedPassword = password.trim();
@@ -113,42 +115,52 @@ const handleSubmit = async (): Promise<null | void | NavigationFailure | undefin
   } catch (error) {
     state.loading = false;
     const typedError = error as ResponseError;
-    const response = typedError.response?.data;
-    console.log(response);
-    state.formError = 'error';
-    // TODO: handle errors
+    if (typedError.response && typedError.response.data) {
+      const response = typedError.response.data;
+      if (response.status === 400) {
+        if (response.info === RESPONSE_MESSAGES.invalidData) {
+          return state.formError = ERROR_MESSAGES.invalidData;
+        }
+        if (response.info === RESPONSE_MESSAGES.missingData) {
+          return state.formError = ERROR_MESSAGES.missingData;
+        }
+      }
+      if (response.status === 401) {
+        return state.formError = ERROR_MESSAGES.accessDenied;
+      }
+    }
+    return state.formError = ERROR_MESSAGES.generic;
   }
 };
 </script>
 
 <template>
   <div class="wrap width">
-    <div class="auth-title">
+    <div class="auth-title noselect">
       SIGN IN
     </div>
     <form
       @submit.prevent="handleSubmit"
-      class="form mt-1"
+      class="form mt-3"
     >
       <InputComponent
-        :custom-styles="{ marginTop: `${SPACER}px` }"
+        @input="handleInput"
         :disabled="state.loading"
-        :handleInput="handleInput"
         :name="'login'"
         :placeholder="'Login'"
         :type="'text'"
         :value="state.login"
       />
       <InputComponent
+        @input="handleInput"
         :custom-styles="{ marginTop: `${SPACER}px` }"
         :disabled="state.loading"
-        :handleInput="handleInput"
         :name="'password'"
         :placeholder="'Password'"
         :type="'password'"
         :value="state.password"
       />
-      <div class="error-block mt-1">
+      <div class="error-block">
         <div
           v-if="state.formError"
           class="error-content"
@@ -161,7 +173,6 @@ const handleSubmit = async (): Promise<null | void | NavigationFailure | undefin
           backgroundColor: disableSubmit
             ? COLORS.muted
             : COLORS.accent,
-          marginTop: `${SPACER}px`,
         }"
         :disabled="disableSubmit"
         :is-submit="true"
@@ -170,29 +181,29 @@ const handleSubmit = async (): Promise<null | void | NavigationFailure | undefin
       </WideButton>
     </form>
     <LinkButton
+      @click="() => router.push('/recovery')"
       :custom-button-styles="{
         marginTop: `${SPACER}px`,
       }"
       :disabled="state.loading"
-      :on-click="() => router.push('/recovery')"
     >
       Forgot password
     </LinkButton>
     <LinkButton
+      @click="() => router.push('/sign-up')"
       :custom-button-styles="{
         marginTop: `${SPACER}px`,
       }"
       :disabled="state.loading"
-      :on-click="() => router.push('/sign-up')"
     >
       Create account
     </LinkButton>
     <LinkButton
+      @click="() => router.push('/')"
       :custom-button-styles="{
         marginTop: `${SPACER}px`,
       }"
       :disabled="state.loading"
-      :on-click="() => router.push('/')"
     >
       Back
     </LinkButton>
@@ -203,5 +214,9 @@ const handleSubmit = async (): Promise<null | void | NavigationFailure | undefin
 .form, .wrap {
   display: flex;
   flex-direction: column;
+}
+.wrap {
+  margin: 0 auto var(--header-height) auto;
+  padding: 0 var(--spacer);
 }
 </style>

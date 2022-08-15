@@ -5,20 +5,28 @@ interface WideButtonComponentProps {
   customButtonStyles?: StyleValue;
   disabled?: boolean;
   isSubmit?: boolean;
-  onClick?: () => void;
 }
 
-defineProps<WideButtonComponentProps>();
+const props = defineProps<WideButtonComponentProps>();
+const emit = defineEmits(['click']);
+
+const handleClick = (): null | void => {
+  if (props.isSubmit) {
+    return null;
+  }
+  return emit('click');
+};
 </script>
 
 <template>
   <button
-    @click="!isSubmit ? onClick : (() => null)"
+    @click="handleClick"
     :disabled="disabled"
     :style="{
       ...((typeof customButtonStyles === 'object' && customButtonStyles) || {}),
     }"
     :type="isSubmit ? 'submit' : 'button'"
+    class="noselect"
   >
     <slot></slot>
   </button>

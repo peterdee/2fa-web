@@ -2,6 +2,8 @@
   --accent: #2244FF;
   --accent-light: #4488FF;
   --background: #FFFFFF;
+  --footer-height: 48px;
+  --header-height: 64px;
   --muted: #A0A0A0;
   --muted-dark: #686868;
   --muted-light: #EAEAEA;
@@ -25,7 +27,6 @@ html, body {
   color: var(--text);
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  min-height: 100vh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
