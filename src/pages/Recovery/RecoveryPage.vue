@@ -11,6 +11,7 @@ import {
   CLIENT_TYPE,
   COLORS,
   ERROR_MESSAGES,
+  PASSWORD_MIN_LENGTH,
   RESPONSE_MESSAGES,
   SPACER,
 } from '@/constants';
@@ -97,11 +98,12 @@ const handleStageOne = async (): Promise<Navigation | number | string> => {
         userId: receivedUserId,
       } = {},
     } = data;
+
+    state.loading = false;
     if (!(receivedRecoveryQuestion && receivedUserId)) {
       return state.formError = ERROR_MESSAGES.generic;
     }
 
-    state.loading = false;
     state.recoveryQuestion = receivedRecoveryQuestion;
     state.userId = receivedUserId;
     return state.stage = 2;
@@ -124,26 +126,95 @@ const handleStageOne = async (): Promise<Navigation | number | string> => {
 };
 
 const handleStageTwo = async (): Promise<Navigation | number | string> => {
-  console.log('stage', state.stage);
+  const { newPassword, recoveryAnswer } = state;
+  const trimmedNewPassword = newPassword.trim();
+  const trimmedRecoveryAnswer = recoveryAnswer.trim();
+  if (!(trimmedNewPassword && trimmedRecoveryAnswer)) {
+    return state.formError = ERROR_MESSAGES.pleaseProvideRequiredData;
+  }
+
+  if (trimmedNewPassword.includes(' ')) {
+    return  state.formError = ERROR_MESSAGES.passwordContainsSpaces;
+  }
+  if (trimmedNewPassword.length < PASSWORD_MIN_LENGTH) {
+    return  state.formError = ERROR_MESSAGES.passwordIsTooShort;
+  }
+
+  state.loading = true;
+
+  try {
+    const { data } = await request<RecoveryUpdatePayload>({
+      ...ENDPOINTS.recoveryUpdate,
+      data: {
+        clientType: CLIENT_TYPE,
+        newPassword: trimmedNewPassword,
+        recoveryAnswer: trimmedRecoveryAnswer,
+        userId: state.userId,
+      },
+    });
+
+    state.loading = false;
+    const { data: { token: tokenString, user: userData } = {} } = data;
+    if (!(tokenString && userData)) {
+      return state.formError = ERROR_MESSAGES.generic;
+    }
+
+    store.setAuth({
+      login: userData.login,
+      token: tokenString,
+      userId: userData.id,
+    });
+    return state.stage = 3;
+  } catch (error) {
+    state.loading = false;
+    const typedError = error as ResponseError;
+    if (typedError.response && typedError.response.data) {
+      const response = typedError.response.data;
+      if (response.status === 400) {
+        if (response.info === RESPONSE_MESSAGES.invalidData) {
+          return state.formError = ERROR_MESSAGES.invalidData;
+        }
+        if (response.info === RESPONSE_MESSAGES.missingData) {
+          return state.formError = ERROR_MESSAGES.missingData;
+        }
+        if (response.info === RESPONSE_MESSAGES.passwordContainsSpaces) {
+          return state.formError = ERROR_MESSAGES.passwordContainsSpaces;
+        }
+        if (response.info === RESPONSE_MESSAGES.passwordIsTooShort) {
+          return state.formError = ERROR_MESSAGES.passwordIsTooShort;
+        }
+      }
+      if (response.status === 401) {
+        return state.formError = ERROR_MESSAGES.accessDenied;
+      }
+      if (response.status === 403) {
+        return state.formError = ERROR_MESSAGES.recoveryAnswerIsInvalid;
+      }
+    }
+    return state.formError = ERROR_MESSAGES.generic;
+  }
 };
 
 const disableStageTwoSubmit = computed((): boolean => {
   if (state.loading) {
     return true;
   }
-  return !(state.newPassword && state.recoveryAnswer);
+  return !(state.newPassword.trim() && state.recoveryAnswer.trim());
 });
 </script>
 
 <template>
   <div class="wrap width">
-    <div class="auth-title noselect">
+    <div
+      v-if="state.stage !== 3"
+      class="auth-title mb-1 noselect"
+    >
       ACCOUNT RECOVERY
     </div>
     <form
       v-if="state.stage === 1"
       @submit.prevent="handleStageOne"
-      class="form mt-3"
+      class="form"
     >
       <InputComponent
         @input="handleInput"
@@ -170,12 +241,12 @@ const disableStageTwoSubmit = computed((): boolean => {
     <form
       v-if="state.stage === 2"
       @submit.prevent="handleStageTwo"
-      class="form mt-3"
+      class="form"
     >
-      <div>
+      <div class="answer-question mb-1 noselect">
         Please answer the following question:
       </div>
-      <div>
+      <div class="question mb-1 noselect">
         {{ state.recoveryQuestion }}
       </div>
       <InputComponent
@@ -209,6 +280,12 @@ const disableStageTwoSubmit = computed((): boolean => {
         SUBMIT
       </WideButton>
     </form>
+    <div
+      v-if="state.stage === 3"
+      class="recovery-complete noselect"
+    >
+      Account recovery completed!
+    </div>
     <LinkButton
       @click="() => router.back()"
       :custom-button-styles="{
@@ -216,7 +293,7 @@ const disableStageTwoSubmit = computed((): boolean => {
       }"
       :disabled="state.loading"
     >
-      Back
+      {{ state.stage !== 3 ? 'Back' : 'Proceed' }}
     </LinkButton>
   </div>
 </template>
@@ -233,5 +310,17 @@ const disableStageTwoSubmit = computed((): boolean => {
   justify-content: center;
   margin: 0 auto;
   padding: 0 var(--spacer);
+}
+.answer-question, .question, .recovery-complete {
+  text-align: center;
+  width: 100%;
+}
+.question {
+  color: var(--accent);
+  font-weight: 500;
+}
+.recovery-complete {
+  color: var(--positive);
+  font-size: calc(var(--spacer) + var(--spacer-half));
 }
 </style>

@@ -27,6 +27,7 @@ export const ERROR_MESSAGES = {
   passwordContainsSpaces: 'Password contains spaces!',
   passwordIsTooShort: 'Password is too short!',
   pleaseProvideRequiredData: 'Please provide required data!',
+  recoveryAnswerIsInvalid: 'Recovery answer is invalid!',
 };
 
 export const LOGIN_MAX_LENGTH = 16;
