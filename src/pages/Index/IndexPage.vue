@@ -2,8 +2,6 @@
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
-import { SPACER } from '@/constants';
 import { useStore } from '@/stores/auth.store';
 
 const router = useRouter();
@@ -22,19 +20,6 @@ onMounted(() => {
     <div class="auth-title noselect mb-1">
       2FA PROJECT
     </div>
-    <LinkButton
-      @click="router.push('/sign-in')"
-    >
-      Sign in
-    </LinkButton>
-    <LinkButton
-      @click="router.push('/sign-up')"
-      :custom-button-styles="{
-        marginTop: `${SPACER}px`,
-      }"
-    >
-      Sign up
-    </LinkButton>
   </div>
 </template>
 

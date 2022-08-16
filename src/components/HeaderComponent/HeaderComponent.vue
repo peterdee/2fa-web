@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, type RouteRecordName } from 'vue-router';
 
+import close from '@/assets/close.svg';
 import loader from '@/assets/loader.svg';
+import menu from '@/assets/menu.svg';
+import { useAppStore } from '@/stores/app.store';
+import { useStore } from '@/stores/auth.store';
 
 const HEADER_HIDDEN = [
   'recovery',
@@ -11,7 +15,24 @@ const HEADER_HIDDEN = [
 ];
 
 const router = useRouter();
-const currentRoute = computed(() => router.currentRoute.value.name);
+const appStore = useAppStore();
+const authStore = useStore();
+
+const currentRoute = computed(
+  (): RouteRecordName | null | undefined => router.currentRoute.value.name,
+);
+
+const isLoggedIn = computed((): boolean => {
+  const { login, token, userId } = authStore;
+  return !!login && !!token && !!userId;
+});
+
+const menuShown = computed((): boolean => {
+  const { showMenu } = appStore;
+  return showMenu;
+});
+
+const handleMenu = (): void => appStore.toggleMenu(!appStore.showMenu);
 </script>
 
 <template>
@@ -28,8 +49,37 @@ const currentRoute = computed(() => router.currentRoute.value.name);
           class="logo-image"
         />
       </button>
-      <div class="flex">
-        Sign in
+      <div
+        v-if="!isLoggedIn"
+        class="flex"
+      >
+        <button
+          @click="router.push('/sign-in')"
+          class="auth-button"
+          type="button"
+        >
+          SIGN IN
+        </button>
+        <button
+          @click="router.push('/sign-up')"
+          class="auth-button ml-1"
+          type="button"
+        >
+          SIGN UP
+        </button>
+      </div>
+      <div v-if="isLoggedIn">
+        <button
+          @click="handleMenu"
+          class="flex align-items-center justify-center menu"
+          type="button"
+        >
+          <img
+            :src="menuShown ? close : menu"
+            alt="2FA"
+            class="menu-image"
+          />
+        </button>
       </div>
     </div>
   </header>
@@ -53,10 +103,29 @@ header {
   width: 100%;
 }
 .logo, .logo-image {
-  height: calc(var(--spacer) * 3);
-  width: calc(var(--spacer) * 3);
+  height: calc(var(--spacer) * 2 + var(--spacer-half));
+  width: calc(var(--spacer) * 2 + var(--spacer-half));
 }
-.logo {
+.logo, .menu {
   cursor: pointer;
+}
+.menu, .menu-image {
+  height: calc(var(--spacer) * 2);
+  width: calc(var(--spacer) * 2);
+}
+.auth-button {
+  background-color: transparent;
+  border-radius: calc(var(--spacer-half) / 2);
+  color: var(--text-inverted);
+  cursor: pointer;
+  font-size: calc(var(--spacer) - (var(--spacer-half) / 2));
+  font-weight: 300;
+  padding: var(--spacer-half) var(--spacer);
+  transition: background-color 160ms ease-out, color 160ms ease-out;
+}
+.auth-button:hover {
+  background-color: var(--background);
+  color: var(--accent);
+  transition: background-color 160ms ease-in, color 160ms ease-in;
 }
 </style>
