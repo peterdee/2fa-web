@@ -79,6 +79,8 @@
 .splitter {
   background-color: var(--negative);
   height: 1px;
+  margin-bottom: var(--spacer);
+  margin-top: var(--spacer-half);
   width: calc(var(--spacer) * 15);
 }
 .menu-button {
@@ -89,6 +91,7 @@
   font-size: var(--spacer);
   font-weight: 300;
   height: calc(var(--spacer) * 3);
+  margin-bottom: var(--spacer-half);
   opacity: 1;
   transition: background-color 200ms ease-out, color 200ms ease-out;
   width: calc(var(--spacer) * 15);
@@ -98,6 +101,12 @@
 }
 .danger-button {
   color: var(--negative);
+}
+.highlight-button {
+  border: 1px solid var(--background);
+}
+.highlight-danger-button {
+  border: 1px solid var(--negative);
 }
 .menu-button:hover {
   background-color: var(--background);

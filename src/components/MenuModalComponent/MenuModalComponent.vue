@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, reactive } from 'vue';
+import { type RouteRecordName, useRouter } from 'vue-router';
 
 import close from '@/assets/close.svg';
 import loader from '@/assets/loader.svg';
@@ -19,6 +19,10 @@ const router = useRouter();
 const state = reactive<MenuModalState>({
   isClosing: false,
 });
+
+const currentRoute = computed(
+  (): RouteRecordName | null | undefined => router.currentRoute.value.name,
+);
 
 const delay = async (duration = 200): Promise<boolean> => {
   state.isClosing = true;
@@ -85,24 +89,28 @@ const handleTransition = async (destination: string): Promise<void> => {
     <div class="modal-content">
       <MenuButton
         @click="handleTransition('/home')"
+        :is-highlighted="currentRoute === 'home'"
         :is-closing="state.isClosing"
       >
         Home
       </MenuButton>
       <MenuButton
         @click="handleTransition('/change-password')"
+        :is-highlighted="currentRoute === 'changePassword'"
         :is-closing="state.isClosing"
       >
         Change password
       </MenuButton>
       <MenuButton
         @click="handleTransition('/update-recovery')"
+        :is-highlighted="currentRoute === 'updateRecovery'"
         :is-closing="state.isClosing"
       >
         Update recovery data
       </MenuButton>
       <MenuButton
         @click="handleTransition('/mobile-sign-in')"
+        :is-highlighted="currentRoute === 'mobileSignIn'"
         :is-closing="state.isClosing"
       >
         Sign in on mobile
@@ -121,10 +129,11 @@ const handleTransition = async (destination: string): Promise<void> => {
       >
         Logout on all devices
       </MenuButton>
-      <div :class="['splitter mb-1 mt-1', state.isClosing ? 'hide' : '']"></div>
+      <div :class="['splitter', state.isClosing ? 'hide' : '']"></div>
       <MenuButton
         @click="handleTransition('/delete-account')"
         :is-closing="state.isClosing"
+        :is-highlighted="currentRoute === 'deleteAccount'"
         :with-danger="true"
       >
         Delete account

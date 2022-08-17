@@ -1,6 +1,7 @@
 <script setup lang="ts">
 interface MenuButtonProps {
   isClosing: boolean;
+  isHighlighted?: boolean;
   withDanger?: boolean;
 }
 
@@ -13,6 +14,8 @@ const emit = defineEmits(['click']);
     @click="emit('click')"
     :class="[
       'menu-button',
+      isHighlighted ? 'highlight-button' : '',
+      isHighlighted && withDanger ? 'highlight-danger-button' : '',
       withDanger ? 'danger-button' : '',
       isClosing ? 'hide' : '',
     ]"
