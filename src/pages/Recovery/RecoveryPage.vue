@@ -204,7 +204,7 @@ const disableStageTwoSubmit = computed((): boolean => {
 </script>
 
 <template>
-  <div class="wrap width">
+  <div class="flex direction-column centered-wrap width">
     <div
       v-if="state.stage !== 3"
       class="auth-title mb-1 noselect"
@@ -214,7 +214,7 @@ const disableStageTwoSubmit = computed((): boolean => {
     <form
       v-if="state.stage === 1"
       @submit.prevent="handleStageOne"
-      class="form"
+      class="flex direction-column"
     >
       <InputComponent
         @input="handleInput"
@@ -241,7 +241,7 @@ const disableStageTwoSubmit = computed((): boolean => {
     <form
       v-if="state.stage === 2"
       @submit.prevent="handleStageTwo"
-      class="form"
+      class="flex direction-column"
     >
       <div class="answer-question mb-1 noselect">
         Please answer the following question:
@@ -299,18 +299,6 @@ const disableStageTwoSubmit = computed((): boolean => {
 </template>
 
 <style scoped>
-.form, .wrap {
-  display: flex;
-  flex-direction: column;
-}
-.wrap {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - (var(--footer-height) + var(--header-height)));
-  justify-content: center;
-  margin: 0 auto;
-  padding: 0 var(--spacer);
-}
 .answer-question, .question, .recovery-complete {
   text-align: center;
   width: 100%;

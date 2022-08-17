@@ -188,13 +188,13 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
 </script>
 
 <template>
-  <div class="wrap width">
+  <div class="flex direction-column centered-wrap width">
     <div class="auth-title noselect">
       SIGN UP
     </div>
     <form
       @submit.prevent="handleSubmit"
-      class="form mt-3"
+      class="flex direction-column mt-3"
     >
       <InputComponent
         @input="handleInput"
@@ -264,18 +264,3 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
     </LinkButton>
   </div>
 </template>
-
-<style scoped>
-.form, .wrap {
-  display: flex;
-  flex-direction: column;
-}
-.wrap {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - (var(--footer-height) + var(--header-height)));
-  justify-content: center;
-  margin: 0 auto;
-  padding: 0 var(--spacer);
-}
-</style>

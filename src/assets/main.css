@@ -17,6 +17,9 @@ button {
 .align-items-center {
   align-items: center;
 }
+.direction-column {
+  flex-direction: column;
+}
 .flex {
   display: flex;
 }
@@ -52,6 +55,19 @@ button {
   font-weight: 200;
   letter-spacing: calc(var(--spacer-half) / 2);
   text-align: center;
+}
+
+.centered-wrap {
+  min-height: calc(100vh - (var(--footer-height) + var(--header-height)));
+  justify-content: center;
+  margin: 0 auto;
+  padding: 0 var(--spacer);
+}
+
+.header-width {
+  max-width: calc(var(--spacer) * 40);
+  min-width: calc(var(--spacer) * 20);
+  width: 100%;
 }
 
 .width {

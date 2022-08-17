@@ -37,7 +37,7 @@ const handleMenu = (): void => appStore.toggleMenu(!appStore.showMenu);
 
 <template>
   <header v-if="!HEADER_HIDDEN.includes(String(currentRoute))">
-    <div class="flex align-items-center justify-space-between content noselect">
+    <div class="flex align-items-center justify-space-between header-width content noselect">
       <button
         @click="router.push('/')"
         class="flex align-items-center justify-center logo"
@@ -97,10 +97,7 @@ header {
 .content {
   height: calc(var(--spacer) * 4);
   margin: 0 auto;
-  max-width: calc(var(--spacer) * 40);
-  min-width: calc(var(--spacer) * 20);
   padding: 0 calc(var(--spacer) * 2);
-  width: 100%;
 }
 .logo, .logo-image {
   height: calc(var(--spacer) * 2 + var(--spacer-half));

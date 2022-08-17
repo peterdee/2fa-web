@@ -18,6 +18,7 @@ export const COLORS = {
 
 export const ERROR_MESSAGES = {
   accessDenied: 'Access denied!',
+  currentPasswordIsInvalid: 'Current password is invalid!',
   generic: 'Something went wrong...',
   invalidData: 'Provided data is invalid!',
   loginIsAlreadyInUse: 'Login is already in use!',
@@ -42,6 +43,7 @@ export const RESPONSE_MESSAGES = {
   missingData: 'MISSING_DATA',
   passwordContainsSpaces: 'PASSWORD_CONTAINS_SPACES',
   passwordIsTooShort: 'PASSWORD_IS_TOO_SHORT',
+  oldPasswordIsInvalid: 'OLD_PASSWORD_IS_INVALID',
 };
 
 export const SPACER = 16;

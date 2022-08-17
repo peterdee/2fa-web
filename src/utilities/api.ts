@@ -33,6 +33,10 @@ const METHODS = {
 };
 
 export const ENDPOINTS = {
+  changePassword: {
+    method: METHODS.patch,
+    url: '/api/password',
+  },
   logout: {
     method: METHODS.get,
     url: '/api/auth/logout',

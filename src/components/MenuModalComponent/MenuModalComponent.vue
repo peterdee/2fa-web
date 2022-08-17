@@ -61,7 +61,9 @@ const handleTransition = async (destination: string): Promise<void> => {
     :class="['wrap', state.isClosing ? 'closing' : '']"
   >
     <div class="modal-header">
-      <div class="flex align-items-center justify-space-between header-content noselect">
+      <div
+        class="flex align-items-center justify-space-between header-width header-content noselect"
+      >
         <button
           @click="handleTransition('/')"
           class="flex align-items-center justify-center logo"
