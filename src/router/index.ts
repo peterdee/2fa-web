@@ -26,6 +26,11 @@ const router = createRouter({
       path: '/home',
     },
     {
+      component: () => import('../pages/MobileSignIn/MobileSignInPage.vue'),
+      name: 'mobileSignIn',
+      path: '/mobile-sign-in',
+    },
+    {
       component: () => import('../pages/Recovery/RecoveryPage.vue'),
       name: 'recovery',
       path: '/recovery',
@@ -39,6 +44,11 @@ const router = createRouter({
       component: () => import('../pages/SignUp/SignUpPage.vue'),
       name: 'signUp',
       path: '/sign-up',
+    },
+    {
+      component: () => import('../pages/UpdateRecovery/UpdateRecoveryPage.vue'),
+      name: 'updateRecovery',
+      path: '/update-recovery',
     },
     {
       component: () => import('../pages/NotFound/NotFoundPage.vue'),

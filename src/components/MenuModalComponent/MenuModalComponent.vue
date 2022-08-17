@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router';
 
 import close from '@/assets/close.svg';
 import loader from '@/assets/loader.svg';
+import MenuButton from './compoents/MenuButtonComponent.vue';
+import request, { ENDPOINTS } from '@/utilities/api';
 import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
 
@@ -24,12 +26,6 @@ const delay = async (duration = 200): Promise<boolean> => {
   return state.isClosing = false;
 };
 
-const handleCompleteLogout = async (): Promise<void> => {
-  console.log('Comeplete logout');
-  await delay();
-  return appStore.toggleMenu(!appStore.showMenu);
-};
-
 const handleMenu = async (): Promise<void> => {
   await delay();
   return appStore.toggleMenu(!appStore.showMenu);
@@ -37,6 +33,14 @@ const handleMenu = async (): Promise<void> => {
 
 const handleTransition = async (destination: string): Promise<void> => {
   let actualDestination = destination;
+  if (destination === 'complete-logout') {
+    actualDestination = '/';
+    request({
+      ...ENDPOINTS.logout,
+      token: authStore.token,
+    });
+    authStore.clearAuth();
+  }
   if (destination === 'logout') {
     actualDestination = '/';
     authStore.clearAuth();
@@ -55,7 +59,7 @@ const handleTransition = async (destination: string): Promise<void> => {
     <div class="modal-header">
       <div class="flex align-items-center justify-space-between header-content noselect">
         <button
-          @click="router.push('/')"
+          @click="handleTransition('/')"
           class="flex align-items-center justify-center logo"
           type="button"
         >
@@ -79,152 +83,55 @@ const handleTransition = async (destination: string): Promise<void> => {
       </div>
     </div>
     <div class="modal-content">
-      <button
+      <MenuButton
+        @click="handleTransition('/home')"
+        :is-closing="state.isClosing"
+      >
+        Home
+      </MenuButton>
+      <MenuButton
         @click="handleTransition('/change-password')"
-        :class="['menu-button', state.isClosing ? 'button-hide' : '']"
-        type="button"
+        :is-closing="state.isClosing"
       >
         Change password
-      </button>
-      <button
+      </MenuButton>
+      <MenuButton
+        @click="handleTransition('/update-recovery')"
+        :is-closing="state.isClosing"
+      >
+        Update recovery data
+      </MenuButton>
+      <MenuButton
+        @click="handleTransition('/mobile-sign-in')"
+        :is-closing="state.isClosing"
+      >
+        Sign in on mobile
+      </MenuButton>
+      <MenuButton
         @click="handleTransition('logout')"
-        :class="['menu-button danger-button', state.isClosing ? 'hide' : '']"
-        type="button"
+        :is-closing="state.isClosing"
+        :with-danger="true"
       >
         Logout
-      </button>
-      <button
-        @click="handleCompleteLogout"
-        :class="['menu-button danger-button', state.isClosing ? 'hide' : '']"
-        type="button"
+      </MenuButton>
+      <MenuButton
+        @click="handleTransition('complete-logout')"
+        :is-closing="state.isClosing"
+        :with-danger="true"
       >
         Logout on all devices
-      </button>
+      </MenuButton>
       <div :class="['splitter mb-1 mt-1', state.isClosing ? 'hide' : '']"></div>
-      <button
+      <MenuButton
         @click="handleTransition('/delete-account')"
-        :class="['menu-button danger-button', state.isClosing ? 'hide' : '']"
-        type="button"
+        :is-closing="state.isClosing"
+        :with-danger="true"
       >
         Delete account
-      </button>
+      </MenuButton>
     </div>
     <div class="footer"></div>
   </div>
 </template>
 
-<style scoped>
-@keyframes fade-in {
-  0% {
-    backdrop-filter: brightness(100%);
-  }
-  100% {
-    backdrop-filter: brightness(15%);
-  }
-}
-@keyframes fade-out {
-  0% {
-    backdrop-filter: brightness(15%);
-  }
-  100% {
-    backdrop-filter: brightness(100%);
-  }
-}
-@keyframes button-appear {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes button-disappear {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-.wrap {
-  animation: fade-in 200ms ease;
-  backdrop-filter: brightness(15%);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  justify-content: space-between;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 11;
-}
-.closing {
-  animation: fade-out 200ms ease;
-}
-.modal-header {
-  background-color: transparent;
-  height: calc(var(--spacer) * 4);
-  width: 100%;
-}
-.header-content {
-  height: calc(var(--spacer) * 4);
-  margin: 0 auto;
-  max-width: calc(var(--spacer) * 40);
-  min-width: calc(var(--spacer) * 20);
-  padding: 0 calc(var(--spacer) * 2);
-  width: 100%;
-}
-.logo, .logo-image {
-  height: calc(var(--spacer) * 2 + var(--spacer-half));
-  width: calc(var(--spacer) * 2 + var(--spacer-half));
-}
-.logo, .menu {
-  cursor: pointer;
-}
-.menu, .menu-image {
-  height: calc(var(--spacer) * 2);
-  width: calc(var(--spacer) * 2);
-}
-.modal-content {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-}
-.splitter {
-  background-color: var(--negative);
-  height: 1px;
-  width: calc(var(--spacer) * 15);
-}
-.menu-button {
-  animation: button-appear 200ms ease;
-  background-color: transparent;
-  border-radius: calc(var(--spacer-half) / 2);
-  color: var(--text-inverted);
-  font-size: var(--spacer);
-  font-weight: 300;
-  height: calc(var(--spacer) * 3);
-  opacity: 1;
-  transition: background-color 200ms ease-out, color 200ms ease-out;
-  width: calc(var(--spacer) * 15);
-}
-.hide {
-  animation: button-disappear 200ms ease;
-}
-.danger-button {
-  color: var(--negative);
-}
-.menu-button:hover {
-  background-color: var(--background);
-  color: var(--text);
-  transition: background-color 200ms ease-in, color 200ms ease-in;
-}
-.danger-button:hover {
-  background-color: var(--negative);
-}
-.footer {
-  background-color: transparent;
-  height: 1px;
-}
-</style>
+<style scoped src="./styles.css" />

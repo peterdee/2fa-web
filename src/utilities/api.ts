@@ -33,6 +33,10 @@ const METHODS = {
 };
 
 export const ENDPOINTS = {
+  logout: {
+    method: METHODS.get,
+    url: '/api/auth/logout',
+  },
   recoveryCheck: {
     method: METHODS.post,
     url: '/api/recovery/check',
