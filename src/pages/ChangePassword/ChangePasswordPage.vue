@@ -6,6 +6,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 
+import ActionSuccess from '@/components/ActionSuccessComponent/ActionSuccessComponent.vue';
 import AuthError from '@/components/AuthErrorComponent/AuthErrorComponent.vue';
 import {
   COLORS,
@@ -81,15 +82,17 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
   state.passwordChanged = false;
 
   const { newPassword, oldPassword } = state;
+
+  if (newPassword.includes(' ')) {
+    return state.formError = ERROR_MESSAGES.passwordContainsSpaces;
+  }
+
   const trimmedNewPassword = newPassword.trim();
   const trimmedOldPassword= oldPassword.trim();
   if (!(trimmedNewPassword && trimmedOldPassword)) {
     return state.formError = ERROR_MESSAGES.pleaseProvideRequiredData;
   }
 
-  if (trimmedNewPassword.includes(' ')) {
-    return state.formError = ERROR_MESSAGES.passwordContainsSpaces;
-  }
   if (trimmedNewPassword.length < PASSWORD_MIN_LENGTH) {
     return state.formError = ERROR_MESSAGES.passwordIsTooShort;
   }
@@ -166,7 +169,14 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
         :type="'password'"
         :value="state.newPassword"
       />
-      <AuthError :message="state.formError" />
+      <ActionSuccess
+        v-if="!state.formError && state.passwordChanged"
+        message="Your password was updated!"
+      />
+      <AuthError
+        v-if="!!state.formError || !state.passwordChanged"
+        :message="state.formError"
+      />
       <WideButton
         :custom-button-styles="{
           backgroundColor: disableSubmit
