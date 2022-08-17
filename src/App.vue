@@ -3,10 +3,12 @@ import { RouterView } from 'vue-router';
 
 import FooterComponent from './components/FooterComponent/FooterComponent.vue';
 import HeaderComponent from './components/HeaderComponent/HeaderComponent.vue';
+import MenuModalComponent from './components/MenuModalComponent/MenuModalComponent.vue';
 </script>
 
 <template>
   <HeaderComponent />
+  <MenuModalComponent />
   <main>
     <RouterView />
   </main>

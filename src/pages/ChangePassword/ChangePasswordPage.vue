@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-import router from '@/router';
 import { useStore } from '@/stores/auth.store';
 
+const router = useRouter();
 const store = useStore();
 
 onMounted(() => {
@@ -16,6 +17,6 @@ onMounted(() => {
 
 <template>
   <h1>
-    Home page
+    Change password
   </h1>
 </template>
