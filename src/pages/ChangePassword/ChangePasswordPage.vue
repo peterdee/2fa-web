@@ -18,6 +18,7 @@ import {
 import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import type { Navigation } from '@/types/navigation';
 import request, { ENDPOINTS, type ResponseError } from '@/utilities/api';
+import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
 
@@ -38,6 +39,7 @@ enum InputNames {
   oldPassowrd = 'oldPassword',
 }
 
+const appStore = useAppStore();
 const router = useRouter();
 const state = reactive<ComponentState>({
   formError: '',
@@ -135,7 +137,7 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
         }
       }
       if (response.status === 401) {
-        // TODO: handle 401
+        return appStore.toggleErrorModal(true);
       }
     }
     return state.formError = ERROR_MESSAGES.generic;
@@ -171,7 +173,7 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
       />
       <ActionSuccess
         v-if="!state.formError && state.passwordChanged"
-        message="Your password was updated!"
+        message="Password updated!"
       />
       <AuthError
         v-if="!!state.formError || !state.passwordChanged"
@@ -192,16 +194,3 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
     </form>
   </div>
 </template>
-
-<style scoped>
-.page-wrap {
-  margin: 0 auto;
-  padding: var(--spacer) calc(var(--spacer) * 2);
-}
-.page-title {
-  font-size: calc(var(--spacer) * 2);
-  font-weight: 200;
-  letter-spacing: calc(var(--spacer-half) / 2);
-  text-align: left;
-}
-</style>
