@@ -10,7 +10,7 @@ defineProps<AuthErrorComponentProps>();
   <div class="success-block">
     <div
       v-if="message"
-      class="success-content"
+      class="success-content noselect"
     >
       {{ message }}
     </div>

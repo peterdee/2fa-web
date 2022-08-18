@@ -90,7 +90,7 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
   }
 
   const trimmedNewPassword = newPassword.trim();
-  const trimmedOldPassword= oldPassword.trim();
+  const trimmedOldPassword = oldPassword.trim();
   if (!(trimmedNewPassword && trimmedOldPassword)) {
     return state.formError = ERROR_MESSAGES.pleaseProvideRequiredData;
   }
@@ -147,7 +147,7 @@ const handleSubmit = async (): Promise<Navigation | boolean | string> => {
 
 <template>
   <div class="flex direction-column page-wrap header-width">
-    <div class="page-title">
+    <div class="page-title noselect">
       Change password
     </div>
     <form

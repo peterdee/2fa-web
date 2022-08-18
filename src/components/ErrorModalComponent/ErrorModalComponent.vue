@@ -64,7 +64,7 @@ const handleMenu = async (): Promise<void> => {
         You have been logged out!
       </div>
       <div :class="['error-text mt-2 noselect', state.isClosing ? 'hide' : '']">
-        Logged out due to the authorization error!
+        Logged out due to authorization error!
       </div>
       <button
         @click="handleMenu"
