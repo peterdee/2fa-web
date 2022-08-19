@@ -8,12 +8,12 @@
     "url": "https://github.com/peterdee"
   },
   "scripts": {
-    "dev": "vite",
     "build": "run-p type-check build-only",
-    "preview": "vite preview --port 4173",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "dev": "vite",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "preview": "vite preview --port 4173",
+    "type-check": "vue-tsc --noEmit"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -28,6 +28,7 @@
     "axios": "^0.27.2",
     "pinia": "^2.0.18",
     "pinia-plugin-persistedstate": "^2.1.1",
+    "qrcode.vue": "^3.3.3",
     "vue": "^3.2.37",
     "vue-router": "^4.1.3"
   },

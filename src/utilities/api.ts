@@ -41,6 +41,10 @@ export const ENDPOINTS = {
     method: METHODS.patch,
     url: '/api/account/recovery-data',
   },
+  getAuthCode: {
+    method: METHODS.get,
+    url: '/api/auth/code',
+  },
   logout: {
     method: METHODS.get,
     url: '/api/auth/logout',
