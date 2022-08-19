@@ -49,6 +49,10 @@ export const ENDPOINTS = {
     method: METHODS.get,
     url: '/api/auth/code',
   },
+  getSecrets: {
+    method: METHODS.get,
+    url: '/api/secrets',
+  },
   logout: {
     method: METHODS.get,
     url: '/api/auth/logout',
