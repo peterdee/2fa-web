@@ -8,8 +8,11 @@ import { useRouter } from 'vue-router';
 import AuthError from '@/components/AuthErrorComponent/AuthErrorComponent.vue';
 import { ERROR_MESSAGES } from '@/constants';
 import type { Navigation } from '@/types/navigation';
+import LoadingComponent from './components/LoadingComponent.vue';
+import NothingToDisplay from './components/NothingToDisplayComponent.vue';
 import request, { ENDPOINTS, type ResponseError } from '@/utilities/api';
 import type { StoredSecretEntry } from '@/types/models';
+import TokenComponent from './components/TokenComponent.vue';
 import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
 
@@ -26,14 +29,13 @@ const appStore = useAppStore();
 const router = useRouter();
 const state = reactive<ComponentState>({
   actionError: '',
-  loading: false,
+  loading: true,
   secrets: [],
 });
 const store = useStore();
 
 const loadData = async (): Promise<StoredSecretEntry[] | string | void> => {
   state.actionError = '';
-  state.loading = true;
 
   try {
     const {
@@ -75,6 +77,20 @@ onMounted((): void | Promise<Navigation> => {
     <div class="page-title noselect">
       Home
     </div>
+    <template v-if="state.loading">
+      <LoadingComponent />
+    </template>
+    <template v-if="!state.loading && state.secrets.length === 0">
+      <NothingToDisplay />
+    </template>
+    <template v-if="!state.loading && state.secrets.length > 0">
+      <template
+        v-for="secret of state.secrets"
+        :key="secret.id"
+      >
+        <TokenComponent :entry="secret" />
+      </template>
+    </template>
     <AuthError :message="state.actionError" />
   </div>
 </template>
