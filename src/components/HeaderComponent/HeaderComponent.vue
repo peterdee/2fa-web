@@ -2,9 +2,8 @@
 import { computed } from 'vue';
 import { useRouter, type RouteRecordName } from 'vue-router';
 
-import close from '@/assets/close.svg';
-import loader from '@/assets/loader.svg';
-import menu from '@/assets/menu.svg';
+import LogoButton from '../LogoButtonComponent/LogoButtonComponent.vue';
+import MenuButton from '../MenuButtonComponent/MenuButtonComponent.vue';
 import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
 
@@ -38,17 +37,7 @@ const handleMenu = (): void => appStore.toggleMenu(!appStore.showMenu);
 <template>
   <header v-if="!HEADER_HIDDEN.includes(String(currentRoute))">
     <div class="flex align-items-center justify-space-between header-width content noselect">
-      <button
-        @click="router.push('/')"
-        class="flex align-items-center justify-center logo"
-        type="button"
-      >
-        <img
-          :src="loader"
-          alt="2FA"
-          class="logo-image"
-        />
-      </button>
+      <LogoButton @click="router.push('/')" />
       <div
         v-if="!isLoggedIn"
         class="flex"
@@ -69,17 +58,10 @@ const handleMenu = (): void => appStore.toggleMenu(!appStore.showMenu);
         </button>
       </div>
       <div v-if="isLoggedIn">
-        <button
+        <MenuButton
           @click="handleMenu"
-          class="flex align-items-center justify-center menu"
-          type="button"
-        >
-          <img
-            :src="menuShown ? close : menu"
-            alt="2FA"
-            class="menu-image"
-          />
-        </button>
+          :menu-shown="menuShown"
+        />
       </div>
     </div>
   </header>
@@ -98,17 +80,6 @@ header {
   height: calc(var(--spacer) * 4);
   margin: 0 auto;
   padding: 0 calc(var(--spacer) * 2);
-}
-.logo, .logo-image {
-  height: calc(var(--spacer) * 2 + var(--spacer-half));
-  width: calc(var(--spacer) * 2 + var(--spacer-half));
-}
-.logo, .menu {
-  cursor: pointer;
-}
-.menu, .menu-image {
-  height: calc(var(--spacer) * 2);
-  width: calc(var(--spacer) * 2);
 }
 .auth-button {
   background-color: transparent;

@@ -18,6 +18,7 @@ import InputComponent from '@/components/InputComponent/InputComponent.vue';
 import LinkButton from '@/components/LinkButtonComponent/LinkButtonComponent.vue';
 import type { Navigation } from '@/types/navigation';
 import request, { ENDPOINTS, type ResponseError } from '@/utilities/api';
+import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
 import WideButton from '@/components/WideButtonComponent/WideButtonComponent.vue';
 
@@ -41,6 +42,7 @@ interface SignInPayload {
   };
 }
 
+const appStore = useAppStore();
 const router = useRouter();
 const state = reactive<ComponentState>({
   formError: '',
@@ -73,7 +75,7 @@ const handleInput = (event: Event): void => {
   state.formError = '';
 };
 
-const handleSubmit = async (): Promise<Navigation | null | string> => {
+const handleSubmit = async (): Promise<Navigation | null | string | void> => {
   const { login, password } = state;
   const trimmedLogin = login.trim();
   const trimmedPassword = password.trim();
@@ -126,6 +128,9 @@ const handleSubmit = async (): Promise<Navigation | null | string> => {
         }
       }
       if (response.status === 401) {
+        if (response.info === RESPONSE_MESSAGES.accountSuspended) {
+          return appStore.toggleSuspendedModal(true);
+        }
         return state.formError = ERROR_MESSAGES.accessDenied;
       }
     }

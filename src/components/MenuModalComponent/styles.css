@@ -56,17 +56,6 @@
   margin: 0 auto;
   padding: 0 calc(var(--spacer) * 2);
 }
-.logo, .logo-image {
-  height: calc(var(--spacer) * 2 + var(--spacer-half));
-  width: calc(var(--spacer) * 2 + var(--spacer-half));
-}
-.logo, .menu {
-  cursor: pointer;
-}
-.menu, .menu-image {
-  height: calc(var(--spacer) * 2);
-  width: calc(var(--spacer) * 2);
-}
 .modal-content {
   align-items: center;
   display: flex;

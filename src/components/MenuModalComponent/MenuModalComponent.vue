@@ -2,9 +2,9 @@
 import { computed, reactive } from 'vue';
 import { type RouteRecordName, useRouter } from 'vue-router';
 
-import close from '@/assets/close.svg';
-import loader from '@/assets/loader.svg';
-import MenuButton from './compoents/MenuButtonComponent.vue';
+import CloseButton from '../MenuButtonComponent/MenuButtonComponent.vue';
+import LogoButton from '../LogoButtonComponent/LogoButtonComponent.vue';
+import MenuButton from './components/MenuButtonComponent.vue';
 import request, { ENDPOINTS } from '@/utilities/api';
 import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
@@ -64,28 +64,11 @@ const handleTransition = async (destination: string): Promise<void> => {
       <div
         class="flex align-items-center justify-space-between header-width header-content noselect"
       >
-        <button
-          @click="handleTransition('/')"
-          class="flex align-items-center justify-center logo"
-          type="button"
-        >
-          <img
-            :src="loader"
-            alt="2FA"
-            class="logo-image"
-          />
-        </button>
-        <button
+        <LogoButton @click="handleTransition('/')" />
+        <CloseButton
           @click="handleMenu"
-          class="flex align-items-center justify-center menu"
-          type="button"
-        >
-          <img
-            :src="close"
-            alt="2FA"
-            class="menu-image"
-          />
-        </button>
+          :menu-shown="true"
+        />
       </div>
     </div>
     <div class="modal-content">

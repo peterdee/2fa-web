@@ -3,11 +3,13 @@ import { defineStore } from 'pinia';
 interface AppState {
   showErrorModal: boolean;
   showMenu: boolean;
+  showSuspendedModal: boolean;
 }
 
 const initialState: AppState = {
   showErrorModal: false,
   showMenu: false,
+  showSuspendedModal: false,
 };
 
 export const useAppStore = defineStore(
@@ -19,6 +21,9 @@ export const useAppStore = defineStore(
       },
       toggleMenu(isVisible: boolean): void {
         this.showMenu = isVisible;
+      },
+      toggleSuspendedModal(isVisible: boolean): void {
+        this.showSuspendedModal = isVisible;
       },
     },
     persist: false,

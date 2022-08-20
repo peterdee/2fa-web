@@ -1,6 +1,6 @@
-## 2fa-web
+## 2FA WEB
 
-WEB application for 2FA Mobile
+WEB application for [2FA Mobile](https://github.com/peterdee/2fa-mobile)
 
 ### Deployment
 

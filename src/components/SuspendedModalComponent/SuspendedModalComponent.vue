@@ -1,47 +1,44 @@
 <script setup lang="ts">
-import { onUpdated, reactive } from 'vue';
+import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
+import CloseButton from '../MenuButtonComponent/MenuButtonComponent.vue';
 import LogoButton from '../LogoButtonComponent/LogoButtonComponent.vue';
 import { useAppStore } from '@/stores/app.store';
-import { useStore } from '@/stores/auth.store';
 
-interface ErrorModalState {
+interface SuspendedModalState {
   isClosing: boolean;
 }
 
 const appStore = useAppStore();
-const authStore = useStore();
 const router = useRouter();
-const state = reactive<ErrorModalState>({
+const state = reactive<SuspendedModalState>({
   isClosing: false,
 });
 
-onUpdated((): void => {
-  if (appStore.showErrorModal) {
-    authStore.clearAuth();
-  }
-});
-
-const handleAction = async (): Promise<void> => {
+const handleTransition = async (destination: string): Promise<void> => {
   state.isClosing = true;
   await new Promise((resolve): number => setTimeout(resolve, 200));
   state.isClosing = false;
-  router.push('/');
-  return appStore.toggleErrorModal(!appStore.showErrorModal);
+  router.push(destination);
+  return appStore.toggleSuspendedModal(!appStore.showSuspendedModal);
 };
 </script>
 
 <template>
   <div
-    v-if="appStore.showErrorModal"
+    v-if="appStore.showSuspendedModal"
     :class="['wrap', state.isClosing ? 'closing' : '']"
   >
     <div class="modal-header">
       <div
         class="flex align-items-center justify-space-between header-width header-content noselect"
       >
-        <LogoButton @click="handleAction" />
+        <LogoButton @click="handleTransition('/')" />
+        <CloseButton
+          @click="handleTransition('/sign-in')"
+          :menu-shown="true"
+        />
       </div>
     </div>
     <div class="modal-content">
@@ -51,17 +48,20 @@ const handleAction = async (): Promise<void> => {
           state.isClosing ? 'hide' : ''
         ]"
       >
-        You have been logged out!
+        Account suspended!
       </div>
       <div :class="['error-text mt-2 noselect', state.isClosing ? 'hide' : '']">
-        Logged out due to authorization error!
+        You had too many failed sign in attempts and now your account is suspended!
+      </div>
+      <div :class="['error-text mt-2 noselect', state.isClosing ? 'hide' : '']">
+        You can unblock your account by going through Account Recovery!
       </div>
       <button
-        @click="handleAction"
+        @click="handleTransition('/recovery')"
         :class="['menu-button mt-3', state.isClosing ? 'hide' : '']"
         type="button"
       >
-        OK
+        Go to Account Recovery
       </button>
     </div>
     <div class="footer"></div>

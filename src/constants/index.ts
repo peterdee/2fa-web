@@ -36,6 +36,7 @@ export const LOGIN_MAX_LENGTH = 16;
 export const PASSWORD_MIN_LENGTH = 8;
 
 export const RESPONSE_MESSAGES = {
+  accountSuspended: 'ACCOUNT_SUSPENDED',
   invalidData: 'INVALID_DATA',
   invalidLogin: 'INVALID_LOGIN',
   loginAlreadyInUse: 'LOGIN_ALREADY_IN_USE',
@@ -44,6 +45,7 @@ export const RESPONSE_MESSAGES = {
   passwordContainsSpaces: 'PASSWORD_CONTAINS_SPACES',
   passwordIsTooShort: 'PASSWORD_IS_TOO_SHORT',
   oldPasswordIsInvalid: 'OLD_PASSWORD_IS_INVALID',
+  unauthorized: 'UNAUTHORIZED',
 };
 
 export const SPACER = 16;
