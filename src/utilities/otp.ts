@@ -28,8 +28,5 @@ export async function generateToken(entry: StoredSecretEntry): Promise<null | nu
 }
 
 export function getTimeLeft(period = 30): number {
-  const seconds = new Date().getSeconds();
-  const float = seconds / period;
-  const integer = Math.floor(float);
-  return (period - Math.round(period * (float - integer)));
+  return period - (Math.round(Date.now() / 1000) % period);
 }

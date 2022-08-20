@@ -16,7 +16,7 @@ interface ComponentState {
 const props = defineProps<ComponentProps>();
 const state = reactive<ComponentState>({
   token: null,
-  timeLeft: 0,
+  timeLeft: getTimeLeft(props.entry.period),
 });
 
 async function refreshToken(entry: StoredSecretEntry): Promise<void> {
@@ -25,10 +25,9 @@ async function refreshToken(entry: StoredSecretEntry): Promise<void> {
 
 setInterval(
   (): void => {
-    const timeLeft = state.timeLeft = getTimeLeft(props.entry.period);
-    if (timeLeft === 0) {
-      refreshToken(props.entry);
-    }
+    const { entry } = props;
+    state.timeLeft = getTimeLeft(entry.period);
+    refreshToken(entry);
   },
   1000,
 );
