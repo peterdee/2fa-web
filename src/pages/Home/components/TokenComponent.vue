@@ -39,7 +39,7 @@ onMounted((): Promise<void> => refreshToken(props.entry));
 <template>
   <div
     :class="[
-      'flex header-width justify-space-between mt-1',
+      'flex justify-space-between mt-1',
       withBorder ? 'with-border' : '',
     ]"
   >
