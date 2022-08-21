@@ -85,10 +85,13 @@ onMounted((): void | Promise<Navigation> => {
     </template>
     <template v-if="!state.loading && state.secrets.length > 0">
       <template
-        v-for="secret of state.secrets"
+        v-for="secret, index of state.secrets"
         :key="secret.id"
       >
-        <TokenComponent :entry="secret" />
+        <TokenComponent
+          :entry="secret"
+          :with-border="index < state.secrets.length - 1"
+        />
       </template>
     </template>
     <AuthError :message="state.actionError" />

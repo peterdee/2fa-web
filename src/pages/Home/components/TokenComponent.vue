@@ -6,6 +6,7 @@ import type { StoredSecretEntry } from '@/types/models';
 
 interface ComponentProps {
   entry: StoredSecretEntry;
+  withBorder: boolean;
 }
 
 interface ComponentState {
@@ -36,7 +37,12 @@ onMounted((): Promise<void> => refreshToken(props.entry));
 </script>
 
 <template>
-  <div class="flex header-width justify-space-between">
+  <div
+    :class="[
+      'flex header-width justify-space-between mt-1',
+      withBorder ? 'with-border' : '',
+    ]"
+  >
     <div class="flex direction-column">
       <div class="issuer-text">
         {{ entry.issuer }}
@@ -48,12 +54,36 @@ onMounted((): Promise<void> => refreshToken(props.entry));
         {{ state.token }}
       </div>
     </div>
-    <div class="time-left">
+    <div
+      :class="[
+        'flex direction-column justify-end time-left noselect',
+        state.timeLeft < 10 ? 'time-out' : '',
+      ]"
+    >
       {{ state.timeLeft }}
     </div>
   </div>
 </template>
 
 <style scoped>
-
+.with-border {
+  border-bottom: 1px solid var(--muted-light);
+}
+.issuer-text {
+  color: var(--text);
+  font-size: calc(var(--spacer) + var(--spacer-half) / 2);
+  font-weight: 200;
+}
+.account-text {
+  color: var(--muted);
+  font-size: calc(var(--spacer) - var(--spacer-half) / 2);
+  font-weight: 300;
+}
+.time-left, .token-text {
+  font-size: calc(var(--spacer) + var(--spacer-half) + var(--spacer-half) / 2);
+  font-weight: 200;
+}
+.time-out {
+  color: var(--negative);
+}
 </style>
