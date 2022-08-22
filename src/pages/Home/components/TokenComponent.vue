@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
 
+import formatDate from '@/utilities/format-date';
 import { generateToken, getTimeLeft } from '@/utilities/otp';
 import type { StoredSecretEntry } from '@/types/models';
 
@@ -50,6 +51,12 @@ onMounted((): Promise<void> => refreshToken(props.entry));
       <div class="account-text">
         {{ entry.accountName }}
       </div>
+      <div class="dates-text noselect">
+        Scanned: {{ formatDate(entry.scannedAt) }}
+      </div>
+      <div class="dates-text noselect">
+        Synchronized: {{ formatDate(entry.synchronizedAt) }}
+      </div>
       <div class="token-text">
         {{ state.token }}
       </div>
@@ -74,10 +81,14 @@ onMounted((): Promise<void> => refreshToken(props.entry));
   font-size: calc(var(--spacer) + var(--spacer-half) / 2);
   font-weight: 200;
 }
-.account-text {
-  color: var(--muted);
+.account-text, .dates-text {
+  color: var(--muted-dark);
   font-size: calc(var(--spacer) - var(--spacer-half) / 2);
   font-weight: 300;
+}
+.dates-text {
+  color: var(--muted);
+  font-weight: 200;
 }
 .time-left, .token-text {
   font-size: calc(var(--spacer) + var(--spacer-half) + var(--spacer-half) / 2);
