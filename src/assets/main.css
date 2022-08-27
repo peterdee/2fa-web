@@ -29,6 +29,9 @@ button {
 .justify-end {
   justify-content: flex-end;
 }
+.justify-space-around {
+  justify-content: space-around;
+}
 .justify-space-between {
   justify-content: space-between;
 }
@@ -46,6 +49,9 @@ button {
 }
 .mt-3 {
   margin-top: calc(var(--spacer) * 3);
+}
+.text-center {
+  text-align: center;
 }
 
 .noselect {

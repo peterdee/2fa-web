@@ -8,6 +8,7 @@ import { useAppStore } from '@/stores/app.store';
 import { useStore } from '@/stores/auth.store';
 
 const HEADER_HIDDEN = [
+  'index',
   'recovery',
   'signIn',
   'signUp',
